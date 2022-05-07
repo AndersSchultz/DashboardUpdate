@@ -29,7 +29,6 @@ async function getValuesFromTokenContract(addressArray, chain) {
       failure = true
     }
   }
-  failure = true
   if (failure) {
     return []
   } 

@@ -52,7 +52,7 @@ if (!failedToGetAmounts) {
   console.log(totalCirculating.toString())
   output.circulating = totalCirculating.toString()
 }
-console.log(output)
+// console.log(output)
 
 export async function send(req, res) { // this function will be launched when the API is called.
   try {
