@@ -13,6 +13,7 @@ async function getValuesFromTokenContract(addressArray, chain) {
   }
 
   const tokenAmounts = []
+  var failure = false
   for (let index = 0; index < addressArray.length; index++) {
     queryParams.address = addressArray[index]
 
@@ -25,7 +26,12 @@ async function getValuesFromTokenContract(addressArray, chain) {
       // console.log(data.result)
     } else {
       console.log(data)
+      failure = true
     }
+  }
+  failure = true
+  if (failure) {
+    throw 'Did not get all token ammounts from the scanners'
   } 
   return tokenAmounts
 
