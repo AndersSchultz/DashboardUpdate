@@ -31,7 +31,7 @@ async function getValuesFromTokenContract(addressArray, chain) {
   }
   failure = true
   if (failure) {
-    throw 'Did not get all token ammounts from the scanners'
+    return []
   } 
   return tokenAmounts
 

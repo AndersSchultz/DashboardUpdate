@@ -2,22 +2,34 @@ import { settings } from '../settings.mjs'
 import { getValuesFromTokenContract } from '../token-amounts.mjs';
 import BN from 'bn.js'
 
+var allTokenAmountsReceived
 const ethValues = await getValuesFromTokenContract(settings.Ethereum.TokenAddresses, 'Ethereum')
 const polygonValues = await getValuesFromTokenContract(settings.Polygon.TokenAddresses, 'Polygon')
-const allValues = ethValues.concat(polygonValues)
+allTokenAmountsReceived = ethValues.length > 0 && polygonValues.length > 0
+var output = { success: allTokenAmountsReceived }
 
-var totalSumLocked = allValues.reduce((prev, curr) => {
-  return prev.add(new BN(curr))
-}, new BN('0'))
-
-const totalSumLockedWholeNumber = totalSumLocked.divRound((new BN(10)).pow(new BN(18)))
-const maxSupply = (new BN(10)).pow(new BN(9))
-const totalCirculating = maxSupply.sub(totalSumLockedWholeNumber)
-// console.log(totalCirculating.toString())
+// convert values
+if (allTokenAmountsReceived) {
+  const allValues = ethValues.concat(polygonValues)
+  var totalSumLocked = allValues.reduce((prev, curr) => {
+    return prev.add(new BN(curr))
+  }, new BN('0'))
+  // console.log(totalSumLocked)
+  const totalSumLockedWholeNumber = totalSumLocked.divRound((new BN(10)).pow(new BN(18)))
+  const maxSupply = (new BN(10)).pow(new BN(9))
+  const totalCirculating = maxSupply.sub(totalSumLockedWholeNumber)
+  console.log(totalCirculating.toString())
+  output.circulating = totalCirculating.toString()
+}
+// console.log(output)
 
 export default function handler(req, res) { 
   try {
-    res.send({ success: true, circulating: totalCirculating.toString() })
+    if (allTokenAmountsReceived) {
+      res.send(totalCirculating.toString())
+    } else {
+      res.status(500).send('Sorry, but did not get token amounts from scanners to fulfill the calculation! Please, try again later.')
+    }
   } catch (err) {
     res.send(err) // send the thrown error
   }
