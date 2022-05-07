@@ -1,5 +1,5 @@
-import { settings } from './settings.mjs'
-import { getValuesFromTokenContract } from './token-amounts.mjs';
+import { settings } from '../settings.mjs'
+import { getValuesFromTokenContract } from '../token-amounts.mjs';
 import BN from 'bn.js'
 
 const ethValues = await getValuesFromTokenContract(settings.Ethereum.TokenAddresses, 'Ethereum')
